@@ -1,8 +1,8 @@
 const asyncHandler = require("express-async-handler");
 const { User } = require("../Models/User");
 const bcrypt = require("bcryptjs");
-
-
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 //user signup
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -50,23 +50,28 @@ const registerUser = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
-
 //user login
 
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
-  console.log(password)
+  console.log(password);
 
   if (user && (await bcrypt.compare(password, user.password))) {
+    const token = await jwt.sign(
+      { userId: user._id },
+      process.env.JWTPRIVATEKEY,
+      { expiresIn: "7d" }
+    );
+
+
+    
     res.send({
       name: user.name,
       email: user.email,
       _id: user._id,
       status: true,
+      token
     });
   } else {
     res.status(400).json({ message: "invalid credentials", status: false });
@@ -74,13 +79,9 @@ const loginUser = asyncHandler(async (req, res) => {
   }
 });
 
-
-
-
 //get all users
 
 const getUsers = asyncHandler(async (req, res) => {
-  
   const users = await User.findOne();
 
   if (users) {
@@ -91,13 +92,11 @@ const getUsers = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 //delete user
 const deleteUser = asyncHandler(async (req, res) => {
-  console.log(req.body)
-  const users = await User.deleteOne({_id:req.body._id});
-  
+  console.log(req.body);
+  const users = await User.deleteOne({ _id: req.body._id });
+
   if (users) {
     res.json(users);
   } else {
@@ -106,19 +105,16 @@ const deleteUser = asyncHandler(async (req, res) => {
   }
 });
 
-
-
 //user details update
 
 const updateUser = asyncHandler(async (req, res) => {
-  
   const user = await User.findOne({ _id: req.body._id });
-  
-  let check = await bcrypt.compare(req.body.password, user.password)
+
+  let check = await bcrypt.compare(req.body.password, user.password);
 
   const salt = await bcrypt.genSalt(10);
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
-   
+
   if (user) {
     await User.updateOne(
       { _id: req.body._id },
@@ -132,22 +128,18 @@ const updateUser = asyncHandler(async (req, res) => {
         },
       }
     ).then((data) => {
-      console.log(data)
-    })
-
+      console.log(data);
+    });
   } else {
     res.status(500).json({ message: "something went wrong", status: false });
     throw new Error("invalid  details");
   }
 });
 
-
-
-
 module.exports = {
   registerUser,
   loginUser,
   getUsers,
-  deleteUser ,
+  deleteUser,
   updateUser,
 };

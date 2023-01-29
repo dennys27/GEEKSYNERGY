@@ -41,7 +41,7 @@ const Login = () => {
 
   return (
     <div className="pt-5">
-      <Container>
+      <Container style={{ width: "500px" }}>
         <h3>Login</h3>
         <Form className="w-50%">
           <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -63,7 +63,9 @@ const Login = () => {
               placeholder="Password"
             />
           </Form.Group>
-          <p className="text-primary" onClick={()=>navigate("/signup")}>Sign up</p>
+          <p className="text-primary" onClick={() => navigate("/signup")}>
+            Sign up
+          </p>
 
           <Button onClick={(e) => onSubmit(e)} variant="primary" type="submit">
             Submit

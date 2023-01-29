@@ -43,9 +43,9 @@ const Signup = () => {
 
   return (
     <div className="pt-5">
-      <Container>
+      <Container style={{ width: "500px" }}>
         <h3>Sign Up</h3>
-        <Form classname="w-50%">
+        <Form>
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Name</Form.Label>
             <Form.Control

@@ -1,46 +1,52 @@
 import React from "react";
-import { useNavigate,useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Container from "react-bootstrap/Container";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 const Edit = () => {
-    const details = useLocation();
-    
+  const details = useLocation();
+
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [profession, setProfession] = useState("");
   const [password, setPassword] = useState("");
-    const notify = (string) => toast(string);
-    
+  const notify = (string) => toast(string);
 
-    
-        useEffect(() => {
-            console.log(details.state.user, "its in the edit page");
-            setName(details.state.user.name);
-            setEmail(details.state.user.email);
-            setPhone(details.state.user.phone);
-            setProfession(details.state.user.profession);
-            setPassword(details.state.user.password);
-        }, []);
+  useEffect(() => {
+    console.log(details.state.user, "its in the edit page");
+    setName(details.state.user.name);
+    setEmail(details.state.user.email);
+    setPhone(details.state.user.phone);
+    setProfession(details.state.user.profession);
+    setPassword(details.state.user.password);
+  }, []);
 
   const onSubmit = async (e) => {
     e.preventDefault();
     await axios
-      .post("http://localhost:8000/admin/update", {
-        name,
-        email,
-        phone,
-        profession,
-        password,
-        _id: details.state.user._id
-      })
+      .post(
+        "http://localhost:8000/admin/update",
+        {
+          name,
+          email,
+          phone,
+          profession,
+          password,
+          _id: details.state.user._id,
+        },
+        {
+          headers: {
+            token: `Bearer ${JSON.parse(localStorage.getItem("admin"))?.token}`,
+          },
+        }
+      )
       .then((data) => {
         console.log(data.data, "incoming");
         notify("success");
@@ -50,12 +56,10 @@ const Edit = () => {
       })
       .catch((err) => {
         console.log(err.response.data.message);
-        notify(err.response.data.message);
+        localStorage.removeItem("admin");
+        navigate("/adminlogin");
       });
-    };
-    
-
-
+  };
 
   return (
     <div className="pt-5">

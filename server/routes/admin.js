@@ -5,6 +5,7 @@ const {
   deleteUser,
   loginAdmin,
 } = require("../Controllers/adminControllers");
+const { verifyToken } = require("../Middlewares/jwtVerification");
 var router = express.Router();
 
 
@@ -12,10 +13,10 @@ var router = express.Router();
 
 router.post("/login", loginAdmin);
 
-router.get("/users", getUsers);
+router.get("/users",verifyToken, getUsers);
 
-router.post("/update", updateUser);
+router.post("/update",verifyToken, updateUser);
 
-router.post("/delete", deleteUser);
+router.post("/delete",verifyToken, deleteUser);
 
 module.exports = router;

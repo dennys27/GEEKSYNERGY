@@ -40,7 +40,7 @@ const Adminlogin = () => {
     };
   return (
     <div className="pt-5">
-      <Container>
+      <Container style={{ width: "500px" }}>
         <h3>Admin Login</h3>
         <Form className="w-50%">
           <Form.Group className="mb-3" controlId="formBasicPassword">
@@ -62,7 +62,6 @@ const Adminlogin = () => {
               placeholder="Password"
             />
           </Form.Group>
-
 
           <Button onClick={(e) => onSubmit(e)} variant="primary" type="submit">
             Submit

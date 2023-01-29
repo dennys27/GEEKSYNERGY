@@ -3,11 +3,12 @@ const {
   registerUser,
   loginUser,
 } = require("../Controllers/userControllers");
+const { verifyToken } = require('../Middlewares/jwtVerification');
 var router = express.Router();
 
 
 /* GET users listing. */
-router.post("/login", loginUser);
+router.post("/login",loginUser); 
 
 router.post("/signup", registerUser);
 

@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { Admin } = require("../Models/Admin");
 const { User } = require("../Models/User");
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 //admin login
@@ -9,12 +10,19 @@ const loginAdmin = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const user = await Admin.findOne({ email });
   console.log(password);
+      const token = await jwt.sign(
+        { userId: user._id },
+        process.env.JWTPRIVATEKEY,
+        { expiresIn: "7d" }
+      );
+
 
   if (user && (await bcrypt.compare(password, user.password))) {
     res.send({
       email: user.email,
       _id: user._id,
       status: true,
+      token
     });
   } else {
     res.status(400).json({ message: "invalid credentials", status: false });

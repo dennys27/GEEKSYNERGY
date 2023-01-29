@@ -9,28 +9,46 @@ import axios from "axios";
 
 const Userdata = () => {
   const [change, setChange] = useState("");
-    const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([]);
   const notify = (string) => toast(string);
 
- 
   const navigate = useNavigate();
   useEffect(() => {
-     axios
-      .get("http://localhost:8000/admin/users") 
-      .then(async(data) => {
-        console.log(data)
-       setUsers(data?.data); 
+    axios
+      .get("http://localhost:8000/admin/users", {
+        headers: {
+          token: `Bearer ${JSON.parse(localStorage.getItem("admin"))?.token}`,
+        },
       })
-   
+      .then(async (data) => {
+        setUsers(data?.data);
+      })
+      .catch((err) => {
+        console.log(err.response);
+        localStorage.removeItem("admin");
+        navigate("/adminlogin");
+      });
   }, [change]);
 
-  const deleteUser = async(id) => {
+  const deleteUser = async (id) => {
     await axios
-      .post("http://localhost:8000/admin/delete", { _id: id })
+      .post(
+        "http://localhost:8000/admin/delete",
+        { _id: id },
+        {
+          headers: {
+            token: `Bearer ${JSON.parse(localStorage.getItem("admin"))?.token}`,
+          },
+        }
+      )
       .then((data) => {
         console.log(Math.random());
-        notify("deleted"); 
+        notify("deleted");
         setChange(Math.random());
+      })
+      .catch((err) => {
+        localStorage.removeItem("admin");
+        navigate("/adminlogin");
       });
   };
 
