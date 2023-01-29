@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 
+
+
 //user token verification
 const verifyToken = (req, res, next) => {
   let authHeader = req.headers.token;
@@ -24,5 +26,4 @@ const verifyToken = (req, res, next) => {
 
 module.exports = {
   verifyToken,
-  AdminVerifyToken,
 };
